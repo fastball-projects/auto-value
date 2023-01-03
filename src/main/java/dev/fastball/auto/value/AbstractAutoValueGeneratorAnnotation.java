@@ -47,7 +47,9 @@ public abstract class AbstractAutoValueGeneratorAnnotation<T extends Annotation>
                 .filter(method -> method.getModifiers().contains(Modifier.ABSTRACT))
                 .forEach(fieldMethod -> processField(fieldMethod, context, typeBuilder, accessorPrefixed(annotation)));
         typeBuilder.addSuperinterface(element.asType());
-
+        // 复制接口的类型注解
+//        element.getAnnotationMirrors().forEach(annotationMirror -> typeBuilder.addAnnotation(AnnotationSpec.get(annotationMirror)));
+        element.getTypeParameters().stream().map(TypeVariableName::get).forEach(typeBuilder::addTypeVariable);
         // 如果是 immutable 则字段会是 final, 即无法生成无参构造器
         if (mutable()) {
             typeBuilder.addAnnotation(NoArgsConstructor.class);
