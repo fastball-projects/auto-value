@@ -72,7 +72,9 @@ public abstract class AbstractAutoValueGeneratorAnnotation<T extends Annotation>
     private void processField(ExecutableElement method, GenerateContext context, TypeSpec.Builder typeBuilder, boolean accessorPrefixed) {
         String methodName = method.getSimpleName().toString();
         if (accessorPrefixed && !methodName.startsWith(GET_PREFIX)) {
-            typeBuilder.addMethod(buildUnmatchedMethod(methodName, method.getReturnType()));
+            if (!methodName.startsWith(SET_PREFIX)) {
+                typeBuilder.addMethod(buildUnmatchedMethod(methodName, method.getReturnType()));
+            }
             return;
         }
 
