@@ -38,6 +38,10 @@ public class GenerateContext {
 
     private void loadMethod(TypeElement element) {
         TypeMirror superclass = element.getSuperclass();
+        ElementFilter.methodsIn(element.getEnclosedElements()).forEach(method -> {
+            List<ExecutableElement> methods = methodMap.computeIfAbsent(method.getSimpleName().toString(), methodName -> new ArrayList<>());
+            methods.add(method);
+        });
         if (!(superclass instanceof NoType)) {
             TypeElement superClass = (TypeElement) processingEnv.getTypeUtils().asElement(superclass);
             loadMethod(superClass);
@@ -49,10 +53,6 @@ public class GenerateContext {
                 loadMethod(superInterface);
             }
         }
-        ElementFilter.methodsIn(element.getEnclosedElements()).forEach(method -> {
-            List<ExecutableElement> methods = methodMap.computeIfAbsent(method.getSimpleName().toString(), methodName -> new ArrayList<>());
-            methods.add(method);
-        });
     }
 
 
